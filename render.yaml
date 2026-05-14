@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: sleep-outside
+    runtime: static
+    buildCommand: npm run build
+    staticPublishPath: dist
+    pullRequestPreviewsEnabled: true
