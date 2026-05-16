@@ -18,3 +18,14 @@ const dataSource = new ProductData();
 const element = document.querySelector(".product-list");
 const listing = new ProductList(category, dataSource, element);
 listing.init();
+
+// Handle product sorting interactions
+const sortSelect = document.querySelector("#sort-select");
+if (sortSelect) {
+  sortSelect.addEventListener("change", (event) => {
+    const criteria = event.target.value;
+    if (criteria) {
+      listing.sortList(criteria);
+    }
+  });
+}
