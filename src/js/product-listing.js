@@ -6,7 +6,6 @@ loadHeaderFooter();
 
 const category = getParam("category") ?? "tents";
 
-
 const categoryLabel = category
   .replace(/-/g, " ")
   .replace(/\b\w/g, (c) => c.toUpperCase());
@@ -19,12 +18,12 @@ const element = document.querySelector(".product-list");
 const listing = new ProductList(category, dataSource, element);
 listing.init();
 
-
-const sortSelect = document.querySelector("#sort-select");
-if (sortSelect) {
-  sortSelect.addEventListener("change", (e) => {
-    const criterion = e.target.value;
-
-    listing.sortList(criterion);
-  });
-}
+// Use a clean, global window-level event listener check
+document.addEventListener("change", (event) => {
+  if (event.target && event.target.id === "sort-select") {
+    const criteria = event.target.value;
+    if (criteria) {
+      listing.sortList(criteria);
+    }
+  }
+});
