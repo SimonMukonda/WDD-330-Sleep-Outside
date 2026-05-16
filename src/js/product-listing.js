@@ -6,7 +6,7 @@ loadHeaderFooter();
 
 const category = getParam("category") ?? "tents";
 
-// Turn "sleeping-bags" into "Sleeping Bags" for display purposes
+
 const categoryLabel = category
   .replace(/-/g, " ")
   .replace(/\b\w/g, (c) => c.toUpperCase());
@@ -19,13 +19,12 @@ const element = document.querySelector(".product-list");
 const listing = new ProductList(category, dataSource, element);
 listing.init();
 
-// Handle product sorting interactions
+
 const sortSelect = document.querySelector("#sort-select");
 if (sortSelect) {
-  sortSelect.addEventListener("change", (event) => {
-    const criteria = event.target.value;
-    if (criteria) {
-      listing.sortList(criteria);
-    }
+  sortSelect.addEventListener("change", (e) => {
+    const criterion = e.target.value;
+
+    listing.sortList(criterion);
   });
 }

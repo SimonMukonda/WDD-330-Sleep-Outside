@@ -6,17 +6,17 @@ export default class ProductList {
     this.category = category;
     this.dataSource = dataSource;
     this.listElement = listElement;
-    this.products = []; // Holds the fetched array locally for dynamic sorting
+    this.list = [];
   }
 
   async init() {
     const list = await this.dataSource.getData(this.category);
-    this.products = list; // Cache original data array
-    this.renderList(this.products);
+    this.list = list;
+    this.renderList(this.list);
   }
 
   renderList(productList) {
-    // Clear out the HTML structure so re-sorted items replace old items instead of stacking
+
     this.listElement.innerHTML = "";
 
     renderListWithTemplate(
@@ -28,19 +28,19 @@ export default class ProductList {
     );
   }
 
-  sortList(criteria) {
-    // Clone array to prevent direct original state mutations
-    let sortedList = [...this.products];
 
-    if (criteria === "name") {
-      // Sort alphabetically by the name without brand
-      sortedList.sort((a, b) => a.NameWithoutBrand.localeCompare(b.NameWithoutBrand));
-    } else if (criteria === "price") {
-      // Sort numerically by final purchase price
-      sortedList.sort((a, b) => Number(a.FinalPrice) - Number(b.FinalPrice));
+  sortList(criterion) {
+    if (criterion === "name") {
+      this.list.sort((a, b) => a.Name.localeCompare(b.Name));
+    } else if (criterion === "price") {
+      this.list.sort((a, b) => Number(a.FinalPrice) - Number(b.FinalPrice));
     }
 
-    this.renderList(sortedList);
+
+    this.listElement.innerHTML = "";
+
+
+    this.renderList(this.list);
   }
 }
 
