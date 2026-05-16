@@ -411,10 +411,14 @@ button {
   border-radius: 6px;
   padding: 1rem;
   background: #fafafa;
-} 
+}
 
-.order-summary h3 { margin-top: 0;}
-.order-summary p { margin: 0.35rem 0;}
+.order-summary h3 {
+  margin-top: 0;
+}
+.order-summary p {
+  margin: 0.35rem 0;
+}
 
 /* Checkout validation */
 .error-msg {
@@ -469,7 +473,6 @@ Currently used in the cart page to hide the cart total section when the cart is 
   display: none;
 }
 
-
 .categories {
   padding: 2rem 1rem;
 }
@@ -501,8 +504,6 @@ Currently used in the cart page to hide the cart total section when the cart is 
   margin-top: 0.75rem;
   font-size: 1rem;
 }
-
-
 
 /*  correct product images size from trello task */
 
@@ -598,7 +599,6 @@ main {
   background: var(--primary-color);
   color: #fff;
 }
-
 
 .cart-link {
   position: relative;

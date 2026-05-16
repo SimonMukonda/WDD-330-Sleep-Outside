@@ -7,11 +7,13 @@ export default class ProductList {
     this.category = category;
     this.dataSource = dataSource;
     this.listElement = listElement;
+    this.list = []; // Store the product list array locally within the class instance for sorting
   }
 
   async init() {
     const list = await this.dataSource.getData(this.category);
-    this.renderList(list);
+    this.list = list; // Keep a reference to the active items
+    this.renderList(this.list);
   }
 
   renderList(productList) {
@@ -23,6 +25,21 @@ export default class ProductList {
       true,
     );
   }
+
+  // Method to handle user sorting selections dynamically
+  sortList(criterion) {
+    if (criterion === "name") {
+      this.list.sort((a, b) => a.Name.localeCompare(b.Name));
+    } else if (criterion === "price") {
+      this.list.sort((a, b) => Number(a.FinalPrice) - Number(b.FinalPrice));
+    }
+
+    // Wipe out the current product grid from the HTML
+    this.listElement.innerHTML = "";
+
+    // Re-render the fresh, newly-sorted array
+    this.renderList(this.list);
+  }
 }
 
 function productCardTemplate(product) {
@@ -30,15 +47,15 @@ function productCardTemplate(product) {
     Number(product.FinalPrice) < Number(product.SuggestedRetailPrice);
   const savingsAmount = isDiscounted
     ? (
-        Number(product.SuggestedRetailPrice) - Number(product.FinalPrice)
-      ).toFixed(2)
+      Number(product.SuggestedRetailPrice) - Number(product.FinalPrice)
+    ).toFixed(2)
     : null;
   const savingsPercent = isDiscounted
     ? Math.round(
-        ((Number(product.SuggestedRetailPrice) - Number(product.FinalPrice)) /
-          Number(product.SuggestedRetailPrice)) *
-          100,
-      )
+      ((Number(product.SuggestedRetailPrice) - Number(product.FinalPrice)) /
+        Number(product.SuggestedRetailPrice)) *
+      100,
+    )
     : null;
 
   // Prefer PrimaryMedium when present, but fall back to Image or a placeholder to avoid runtime errors
