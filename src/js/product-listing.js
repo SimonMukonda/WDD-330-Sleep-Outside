@@ -18,3 +18,13 @@ const dataSource = new ProductData();
 const element = document.querySelector(".product-list");
 const listing = new ProductList(category, dataSource, element);
 listing.init();
+
+// Event Listener for the Product Sorting Dropdown
+const sortSelect = document.querySelector("#sort-select");
+if (sortSelect) {
+  sortSelect.addEventListener("change", (e) => {
+    const criterion = e.target.value;
+    // Call our newly created sorting method inside the ProductList instance
+    listing.sortList(criterion);
+  });
+}
