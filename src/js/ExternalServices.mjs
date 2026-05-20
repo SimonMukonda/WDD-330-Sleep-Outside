@@ -1,4 +1,5 @@
-const baseURL = import.meta.env.VITE_SERVER_URL ?? "";
+// This uses your team's API URL as a backup fallback if Vite isn't active
+const baseURL = import.meta.env?.VITE_SERVER_URL || "https://wdd330-backend.onrender.com/";
 
 async function convertToJson(res) {
   if (!res.ok) throw new Error("Bad Response");

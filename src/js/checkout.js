@@ -91,8 +91,6 @@ function validateForm() {
   return valid;
 }
 
-// Initializes the checkout process, including loading header/footer and setting up form submission handling
-
 async function initCheckout() {
   await loadHeaderFooter();
 
@@ -109,23 +107,22 @@ async function initCheckout() {
     }
 
     const submitBtn = form.querySelector('[type="submit"]');
-    if (submitBtn) submitBtn.disabled = true; // prevent multiple submissions
+    if (submitBtn) submitBtn.disabled = true;
 
     try {
       await checkout.checkout(form);
 
-      // Success: hide form , show success message, and clear cart
       form.style.display = "none";
       const successMsg = document.getElementById("form-success");
       if (successMsg) successMsg.style.display = "block";
-      setLocalStorage("so-cart", []); // Clear cart after successful checkout
+      setLocalStorage("so-cart", []);
     } catch (err) {
       console.error("Checkout failed:", err);
       alertMessage(
         "There was an issue processing your order. Please try again.",
       );
     } finally {
-      if (submitBtn) submitBtn.disabled = false; // Re-enable submit button
+      if (submitBtn) submitBtn.disabled = false;
     }
   });
 }

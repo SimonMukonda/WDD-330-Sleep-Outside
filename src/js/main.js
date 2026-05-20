@@ -2,7 +2,7 @@ import ProductData from "./ExternalServices.mjs";
 import ProductList from "./ProductList.mjs";
 import { updateCartCount } from "./cartIndicator.mjs";
 import { loadHeaderFooter, showWelcomeBanner } from "./utils.mjs";
-import Alert from "./Alert";
+import Alert from "./Alert.js";
 
 const productData = new ProductData("tents");
 const productList = new ProductList(
