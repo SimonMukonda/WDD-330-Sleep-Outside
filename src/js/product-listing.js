@@ -3,7 +3,6 @@ import ProductList from "./ProductList.mjs";
 import { loadHeaderFooter, getParam } from "./utils.mjs";
 
 async function init() {
-  // Wait for the templates to render before running DOM selections
   await loadHeaderFooter();
 
   const category = getParam("category") ?? "tents";
@@ -16,20 +15,21 @@ async function init() {
 
   const dataSource = new ProductData();
   const element = document.querySelector(".product-list");
+
+  // 1. Create the instance
   const listing = new ProductList(category, dataSource, element);
-  listing.init();
+  await listing.init();
+
+  // 2. Attach the dropdown listener directly inside the active init context
+  const sortSelect = document.querySelector("#sort-select");
+  if (sortSelect) {
+    sortSelect.addEventListener("change", (event) => {
+      const criteria = event.target.value;
+      if (criteria) {
+        listing.sortList(criteria);
+      }
+    });
+  }
 }
 
 init();
-
-// Global window-level sorting event listener
-document.addEventListener("change", (event) => {
-  if (event.target && event.target.id === "sort-select") {
-    const criteria = event.target.value;
-    // Look up the active selector container instance to process sorting
-    const listElement = document.querySelector(".product-list");
-    if (listElement && criteria) {
-      // Re-initialize or handle list mapping safely
-    }
-  }
-});
