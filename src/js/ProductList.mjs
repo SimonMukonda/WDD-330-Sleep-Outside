@@ -6,46 +6,40 @@ export default class ProductList {
     this.category = category;
     this.dataSource = dataSource;
     this.listElement = listElement;
-    this.products = []; // Cached array
+    this.products = []; // Keeps track of the loaded products
   }
 
   async init() {
-    const list = await this.dataSource.getData(this.category);
-    this.products = list;
+    // Fetch the list of products from your data source
+    this.products = await this.dataSource.getData(this.category);
+    // Render the initial list
     this.renderList(this.products);
   }
 
-  renderList(productList) {
-    // Wipe only the inner contents safely
+  renderList(list) {
+    // Clear out any old HTML elements first
     this.listElement.innerHTML = "";
 
-    // Re-verify we have data before looping
-    if (productList && productList.length > 0) {
-      renderListWithTemplate(
-        productCardTemplate,
-        this.listElement,
-        productList,
-        "beforeend",
-        true,
-      );
-    }
+    // Generate templates and insert them using our component card builder
+    list.forEach(product => {
+      const html = productCardTemplate(product);
+      this.listElement.insertAdjacentHTML("beforeend", html);
+    });
   }
 
   sortList(criteria) {
-    // Shallow copy to prevent mutating the state array directly
-    let sortedList = [...this.products];
-
     if (criteria === "name") {
-      sortedList.sort((a, b) => a.NameWithoutBrand.localeCompare(b.NameWithoutBrand));
+      this.products.sort((a, b) => a.Name.localeCompare(b.Name));
     } else if (criteria === "price") {
-      sortedList.sort((a, b) => Number(a.FinalPrice) - Number(b.FinalPrice));
+      this.products.sort((a, b) => Number(a.FinalPrice) - Number(b.FinalPrice));
     }
 
-    // Fire the rendering sequence with our updated array ordering
-    this.renderList(sortedList);
+    // Re-run your rendering method to update the screen display
+    this.renderList(this.products);
   }
-}
+} // <--- THIS bracket properly closes the ProductList class block!
 
+// Standalone template generator function helper
 function productCardTemplate(product) {
   const isDiscounted = Number(product.FinalPrice) < Number(product.SuggestedRetailPrice);
   const savingsAmount = isDiscounted ? (Number(product.SuggestedRetailPrice) - Number(product.FinalPrice)).toFixed(2) : null;
