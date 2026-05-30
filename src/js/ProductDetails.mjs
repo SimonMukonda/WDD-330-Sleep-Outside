@@ -7,22 +7,25 @@ export default class ProductDetails {
     this.dataSource = dataSource;
     this.product = {};
   }
+
   async init() {
     // 1 search the product
     const product = await this.dataSource.findProductById(this.productId);
     // 2 save the product
     this.product = product;
-    // 3 render HTML
+    // 3 render HTML (including our newly embedded carousel container structure)
     this.renderProductDetails();
     // 4 configure button
     this.setupAddToCartButton();
     // 5 process reviews data matching product context
     this.initReviews();
+    // 6 process and append historical item carousels
+    this.trackRecentProduct();
+    this.renderRecentProducts();
   }
 
   addProductToCart() {
     const cart = getLocalStorage("so-cart") || [];
-
     const existing = cart.find((item) => item.Id === this.product.Id);
 
     if (existing) {
@@ -37,7 +40,6 @@ export default class ProductDetails {
     setLocalStorage("so-cart", cart);
     updateCartCount(); // refresh badge immediately after adding to cart
     alertMessage(`${this.product.NameWithoutBrand} has been added to your cart!`);
-    // animateCartIcon();
   }
 
   setupAddToCartButton() {
@@ -47,6 +49,61 @@ export default class ProductDetails {
         this.addProductToCart();
       });
     }
+  }
+
+  trackRecentProduct() {
+    let recentProducts = JSON.parse(localStorage.getItem("so-recently-viewed")) || [];
+    // Filter out current ID to keep position shifting modern and avoid duplication
+    recentProducts = recentProducts.filter(id => id !== this.productId);
+    // Unshift to place at front of carousel queue
+    recentProducts.unshift(this.productId);
+
+    // Maintain a strict viewport cap limit of 4 historic records
+    if (recentProducts.length > 4) {
+      recentProducts.pop();
+    }
+    localStorage.setItem("so-recently-viewed", JSON.stringify(recentProducts));
+  }
+
+  async renderRecentProducts() {
+    const recentIds = JSON.parse(localStorage.getItem("so-recently-viewed")) || [];
+    const listElement = document.getElementById("recentlyViewedList");
+    const sectionElement = document.querySelector(".recently-viewed");
+    if (!listElement || !sectionElement) return;
+
+    listElement.innerHTML = "";
+
+    // Hide entire block wrapper if only viewing your first item of the browser session
+    if (recentIds.length <= 1) {
+      sectionElement.style.display = "none";
+      return;
+    }
+
+    // Populate thumbnails matching previous arrays
+    for (const id of recentIds) {
+      if (id === this.productId) continue;
+
+      try {
+        const itemData = await this.dataSource.findProductById(id);
+        const cardHtml = this.recentCardTemplate(itemData);
+        listElement.insertAdjacentHTML("beforeend", cardHtml);
+      } catch (err) {
+        console.error(`Error loading recent dynamic element asset details: ${id}`, err);
+      }
+    }
+  }
+
+  recentCardTemplate(product) {
+    return `
+      <li class="recent-card">
+        <a href="../product_pages/index.html?product=${product.Id}">
+          <img src="${product.Images?.PrimaryMedium || product.Image || 'fallback.jpg'}" alt="${product.Name}">
+          <h3 class="recent-brand">${product.Brand?.Name || 'Gear'}</h3>
+          <p class="recent-name">${product.NameWithoutBrand}</p>
+          <p class="recent-price">$${product.FinalPrice || product.ListPrice}</p>
+        </a>
+      </li>
+    `;
   }
 
   initReviews() {
@@ -161,6 +218,14 @@ export default class ProductDetails {
 
       <button type="submit" id="submitReviewBtn">Submit Review</button>
     </form>
+  </section>
+
+  <section class="recently-viewed">
+    <h2>Recently Viewed Items</h2>
+    <div class="carousel-container">
+      <ul id="recentlyViewedList" class="carousel-grid">
+        </ul>
+    </div>
   </section>`;
   }
 }
