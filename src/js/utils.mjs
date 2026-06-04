@@ -62,9 +62,36 @@ export async function loadTemplate(path) {
   throw new Error(`Template at path ${path} could not be loaded.`);
 }
 
+// Dynamic Login / Logout Header State Controller
+export function checkLoginStatus() {
+  const token = localStorage.getItem("user_token");
+  const loginLink = document.getElementById("login-link");
+  const userControls = document.getElementById("user-controls");
+  const logoutBtn = document.getElementById("logout-btn");
+
+  if (loginLink && userControls) {
+    if (token) {
+      // User is logged in: hide login trigger, activate profile panel
+      loginLink.style.display = "none";
+      userControls.style.display = "flex";
+
+      // Sign-out action binding
+      if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+          localStorage.removeItem("user_token");
+          window.location.href = "/index.html";
+        });
+      }
+    } else {
+      // User is logged out: enforce secure standard layout
+      loginLink.style.display = "inline";
+      userControls.style.display = "none";
+    }
+  }
+}
+
 export async function loadHeaderFooter() {
   try {
-    // This looks upward one level relative to your running script paths
     const headerTemplate = await loadTemplate("../partials/header.html");
     const footerTemplate = await loadTemplate("../partials/footer.html");
 
@@ -73,10 +100,14 @@ export async function loadHeaderFooter() {
 
     if (headerElement) headerElement.innerHTML = headerTemplate;
     if (footerElement) footerElement.innerHTML = footerTemplate;
+
+    // Run login evaluation now that partial templates are injected into the DOM
+    checkLoginStatus();
   } catch (error) {
     console.error("Failed to inject header/footer templates:", error);
   }
 }
+
 export function alertMessage(message, scroll = true) {
   const existing = document.querySelector(".alert");
   if (existing) {
