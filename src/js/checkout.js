@@ -1,5 +1,11 @@
 import { alertMessage, loadHeaderFooter, setLocalStorage } from "./utils.mjs";
 import CheckoutProcess from "./CheckoutProcess.mjs";
+// Step 1: Import the Auth module
+import Auth from "../js/Auth.mjs";
+
+// This is initializes Auth and enforce the route guard immediately
+const auth = new Auth();
+auth.isTokenValid(); // This kicks unauthorized users back to the login page safely
 
 // Validation rules for form fields
 const validations = [
@@ -110,7 +116,10 @@ async function initCheckout() {
     if (submitBtn) submitBtn.disabled = true;
 
     try {
-      await checkout.checkout(form);
+      // Step 2: This helps to inject the secure JWT headers directly into the checkout submission process
+      // With built headers downstream into the component
+      const secureHeaders = auth.getAuthHeaders();
+      await checkout.checkout(form, secureHeaders);
 
       form.style.display = "none";
       const successMsg = document.getElementById("form-success");
