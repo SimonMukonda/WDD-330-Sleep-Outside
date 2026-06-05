@@ -2,13 +2,46 @@
     <img src="/WDD-330-Sleep-Outside/src/images/noun_Tent_2517.svg" alt="tent image for logo">
     <a href="/WDD-330-Sleep-Outside/src/index.html"> Sleep<span class="highlight">Outside</span></a>
 </div>
+
 <div class="cart">
-    <a href="/WDD-330-Sleep-Outside/src/cart/index.html">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="30" height="30">
+    <div class="user-nav" style="display: flex; gap: 15px; align-items: center; margin-right: 15px;">
+
+        <a href="/WDD-330-Sleep-Outside/src/login/index.html" id="login-link" class="login-link"
+            aria-label="User Account Login"
+            style="display: flex; align-items: center; gap: 5px; text-decoration: none;">
+            <svg class="login-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                style="width: 24px; height: 24px;">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            <span class="login-text" style="font-weight: bold;">Login</span>
+        </a>
+
+        <div id="user-controls" style="display: none; gap: 12px; align-items: center;">
+            <a href="/WDD-330-Sleep-Outside/src/profile/index.html" id="profile-link"
+                style="display: flex; align-items: center; gap: 5px; text-decoration: none; font-weight: bold; color: #333;">
+                <svg class="login-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    style="width: 24px; height: 24px;">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                My Profile
+            </a>
+            <button id="logout-btn"
+                style="background-color: #ef4444; color: #ffffff; border: none; padding: 6px 12px; cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 0.85rem; height: auto; display: inline-block; min-width: max-content; line-height: 1.2;">Log
+                Out</button>
+        </div>
+    </div>
+
+    <a href="/WDD-330-Sleep-Outside/src/cart/index.html" class="cart-link" aria-label="Shopping cart">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="30" height="30" class="cart-icon">
             <path d="M10 20h15l10 50h50l10-40H30" fill="none" stroke="currentColor" stroke-width="5"
                 stroke-linecap="round" stroke-linejoin="round" />
             <circle cx="40" cy="80" r="5" fill="currentColor" />
             <circle cx="75" cy="80" r="5" fill="currentColor" />
         </svg>
+        <span class="cart-count" aria-label="items in cart">0</span>
     </a>
 </div>
